@@ -1,0 +1,15 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UdactiyChallenge2"
+	},
+	{
+		"ParameterKey": "AMIId",
+		"ParameterValue":"ami-022e1a32d3f742bd8"
+	},
+	{
+		"ParameterKey": "AMIType",
+		"ParameterValue": "t2.micro"
+	}
+
+]
