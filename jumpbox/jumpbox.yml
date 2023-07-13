@@ -24,7 +24,6 @@ Resources:
                 - 'sts:AssumeRole'
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore      
-  
   RoleForS3AccessS:
     Type: AWS::IAM::Role
     Properties:
