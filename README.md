@@ -10,3 +10,5 @@
 <br><b>./create.sh udagram-jumpbox ./jumpbox/jumpbox.yml ./jumpbox/jumpbox-params.json</b> 
 
 Also, to test project properly you will have to add your own .pem file to access EC2 instance using ssh and to change used S3 bucket name.
+
+![alt text](./My%20Udacity%20Diagram.jpeg)
