@@ -92,7 +92,6 @@ Resources:
           sudo apt install -y awscli
           aws s3 sync s3://udagram-813964244258 /var/www/html/
       ImageId: !Ref AMIId 
-      KeyName: my-key
       SecurityGroups:
       - Ref: WebServerSecGroup
       InstanceType: !Ref AMIType
