@@ -13,10 +13,10 @@ Parameters:
         Type: String       
 
 Resources:
-  EC2InstanceRole:
+  S3AccessRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: EC2InstanceRole
+      RoleName: S3AccessRole
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -41,7 +41,7 @@ Resources:
     Properties: 
       Path: "/"
       Roles: 
-        - !Ref EC2InstanceRole
+        - !Ref S3AccessRole
 
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
@@ -161,3 +161,10 @@ Resources:
       VpcId: 
         Fn::ImportValue:
           Fn::Sub: "${EnvironmentName}-VPCID"
+
+Outputs: 
+    EC2InstanceProfile: 
+        Description: A reference to the EC2InstanceProfile
+        Value: !Ref EC2InstanceProfile
+        Export:
+          Name: !Sub ${EnvironmentName}-EC2InstanceProfile
