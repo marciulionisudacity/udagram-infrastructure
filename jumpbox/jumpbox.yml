@@ -22,6 +22,18 @@ Resources:
                   - ec2.amazonaws.com
               Action:
                 - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: S3AccessPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:GetObject
+                    - s3:ListBucket
+                  Resource:
+                    - arn:aws:s3:::udagram-813964244258
+                    - arn:aws:s3:::udagram-813964244258/*        
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore      
   ServerInstanceProfile:

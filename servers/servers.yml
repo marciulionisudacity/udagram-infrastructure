@@ -14,35 +14,37 @@ Parameters:
 
 Resources:
   S3AccessRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: S3AccessRole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: S3AccessPolicy
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:ListBucket
-                Resource:
-                  - arn:aws:s3:::udagram-813964244258
-                  - arn:aws:s3:::udagram-813964244258/*
+    Type: "AWS::IAM::Role"
+    Properties: 
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - ec2.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: S3AccessPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:GetObject
+                    - s3:ListBucket
+                  Resource:
+                    - arn:aws:s3:::udagram-813964244258
+                    - arn:aws:s3:::udagram-813964244258/*        
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore 
   EC2InstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties: 
       Path: "/"
       Roles: 
         - !Ref S3AccessRole
-
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -72,16 +74,11 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: 22
-        ToPort: 22
-        CidrIp: 0.0.0.0/0
       SecurityGroupEgress:
       - IpProtocol: tcp
         FromPort: 0
         ToPort: 65535
         CidrIp: 0.0.0.0/0   
-
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     DependsOn: EC2InstanceProfile
@@ -92,8 +89,8 @@ Resources:
           sudo apt-get update -y
           sudo apt-get install apache2 -y
           sudo systemctl start apache2.service 
-          cd /var/www/html  
-          echo "Udagram is up and running" > index.html       
+          sudo apt install -y awscli
+          aws s3 sync s3://udagram-813964244258 /var/www/html/
       ImageId: !Ref AMIId 
       KeyName: my-key
       SecurityGroups:
@@ -104,7 +101,6 @@ Resources:
       - DeviceName: "/dev/sdk"
         Ebs:
           VolumeSize: '10' 
-
   WebAppGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -124,7 +120,7 @@ Resources:
       - Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
       - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
       SecurityGroups:
-      - Ref: LBSecGroup      
+      - Ref: LBSecGroup    
   Listener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -161,10 +157,3 @@ Resources:
       VpcId: 
         Fn::ImportValue:
           Fn::Sub: "${EnvironmentName}-VPCID"
-
-Outputs: 
-    EC2InstanceProfile: 
-        Description: A reference to the EC2InstanceProfile
-        Value: !Ref EC2InstanceProfile
-        Export:
-          Name: !Sub ${EnvironmentName}-EC2InstanceProfile
