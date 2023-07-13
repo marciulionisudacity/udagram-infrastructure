@@ -13,6 +13,36 @@ Parameters:
         Type: String       
 
 Resources:
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: EC2InstanceRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: S3AccessPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - arn:aws:s3:::your-bucket-name
+                  - arn:aws:s3:::your-bucket-name/*
+  EC2InstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties: 
+      Path: "/"
+      Roles: 
+        - !Ref EC2InstanceRole
+
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -54,6 +84,7 @@ Resources:
 
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
+    DependsOn: EC2InstanceProfile
     Properties:
       UserData:
         Fn::Base64: !Sub |
@@ -68,6 +99,7 @@ Resources:
       SecurityGroups:
       - Ref: WebServerSecGroup
       InstanceType: !Ref AMIType
+      IamInstanceProfile: !Ref EC2InstanceProfile
       BlockDeviceMappings:
       - DeviceName: "/dev/sdk"
         Ebs:
