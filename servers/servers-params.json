@@ -2,5 +2,13 @@
 	{
 		"ParameterKey": "EnvironmentName",
 		"ParameterValue": "Udagram"
+	}, 
+	{
+		"ParameterKey": "AMIId",
+		"ParameterValue":"ami-00ddb0e5626798373"
+	},
+	{
+		"ParameterKey": "AMIType",
+		"ParameterValue": "t3.small"
 	}
 ]

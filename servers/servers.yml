@@ -5,6 +5,12 @@ Parameters:
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
+    AMIId: 
+        Description: An AMI Id that will be used to create EC2 instance
+        Type: String  
+    AMIType: 
+        Description: An AMI Type that will be used to create EC2 instance
+        Type: String       
 
 Resources:
   LBSecGroup:
@@ -57,11 +63,11 @@ Resources:
           sudo systemctl start apache2.service 
           cd /var/www/html  
           echo "Udagram is up and running" > index.html       
-      ImageId: ami-00ddb0e5626798373 
+      ImageId: !Ref AMIId 
       KeyName: my-key
       SecurityGroups:
       - Ref: WebServerSecGroup
-      InstanceType: t3.small
+      InstanceType: !Ref AMIType
       BlockDeviceMappings:
       - DeviceName: "/dev/sdk"
         Ebs:
