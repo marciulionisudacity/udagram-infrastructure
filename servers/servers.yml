@@ -34,8 +34,8 @@ Resources:
                   - s3:GetObject
                   - s3:ListBucket
                 Resource:
-                  - arn:aws:s3:::your-bucket-name
-                  - arn:aws:s3:::your-bucket-name/*
+                  - arn:aws:s3:::udagram-813964244258
+                  - arn:aws:s3:::udagram-813964244258/*
   EC2InstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties: 
